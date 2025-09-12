@@ -1,33 +1,33 @@
 // src/api/axios.ts
 import axios from "axios";
+import { storage } from "@/store/localStorage";
 
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api/v1", // 👈 apunta a tu backend Laravel
+  baseURL: "http://127.0.0.1:8000/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// interceptor opcional para agregar token si existe
-axios.interceptors.response.use(
-  response => response,
-  error => {
-    const message =
-      error.response?.data?.message ||
-      error.response?.data?.error ||
-      "Error inesperado";
+// Interceptor para agregar token a cada request
+api.interceptors.request.use((config) => {
+  const token = storage.getToken();
+  if (token) {
+    config.headers = {
+      ...config.headers,
+      Authorization: `Bearer ${token}`,
+    };
+  }
+  return config;
+});
 
-    let severity: "error" | "warning" | "info" = "error";
-    if (error.response?.status === 422) severity = "warning";
-    if (error.response?.status === 500) severity = "info";
-
-    addToast({ id: btoa(message), message, severity });
+// Interceptor para manejo global de errores (sin Toast directo aquí)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Opcional: puedes lanzar el error y que los componentes manejen el Toast
     return Promise.reject(error);
   }
 );
 
 export default api;
-function addToast(_arg0: { id: string; message: any; severity: "error" | "warning" | "info"; }) {
-  throw new Error("Function not implemented.");
-}
-

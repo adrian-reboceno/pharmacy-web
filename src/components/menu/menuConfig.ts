@@ -52,8 +52,8 @@ export const menuConfig: MenuItem[] = [
       { 
         text: "Permissions", 
         icon: LockIcon,
-        path: "/proveedores", 
-        permission: "permissions-view" 
+        path: "/permissions", 
+        permission: "manager-permissions" 
       },
     ],
   },

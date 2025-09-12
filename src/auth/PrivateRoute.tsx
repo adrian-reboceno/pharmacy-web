@@ -1,39 +1,44 @@
 // src/auth/PrivateRoute.tsx
-import { type ReactNode } from "react";
+import React from "react";
 import { Navigate } from "react-router-dom";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
-import { useAuth } from "@/auth/AuthContext";
+import { useAuth } from "./AuthContext";
 
 interface PrivateRouteProps {
-  children: ReactNode;
-  redirectTo?: string;
+  children: React.ReactNode;
+  roles?: string | string[];
+  requiredPermissions?: string[];
+  requireAll?: boolean;
 }
 
-export default function PrivateRoute({ children, redirectTo = "/login" }: PrivateRouteProps) {
-  const { user, loading } = useAuth();
+const PrivateRoute: React.FC<PrivateRouteProps> = ({
+  children,
+  roles,
+  requiredPermissions = [],
+  requireAll = false,
+}) => {
+  const { user } = useAuth();
 
-  if (loading) {
-    // Mostrar spinner mientras se carga el user desde localStorage
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
 
-  if (!user) {
-    // Si no hay sesión, redirige al login
-    return <Navigate to={redirectTo} replace />;
-  }
+  if (!user) return <Navigate to="/login" replace />;
 
-  // Usuario autenticado → renderiza la ruta protegida
+  const userRoles = user.roles || [];
+  const userPermissions = user.permissions || [];
+
+  const allowedRoles = Array.isArray(roles) ? roles : roles ? [roles] : [];
+
+  const hasRole =
+    allowedRoles.length === 0 || allowedRoles.some((role) => userRoles.includes(role));
+
+  const hasPermission =
+    requiredPermissions.length === 0 ||
+    (requireAll
+      ? requiredPermissions.every((p) => userPermissions.includes(p))
+      : requiredPermissions.some((p) => userPermissions.includes(p)));
+
+  
+  if (!hasRole || !hasPermission) return <Navigate to="/unauthorized" replace />;
+
   return <>{children}</>;
-}
+};
+
+export default PrivateRoute;
