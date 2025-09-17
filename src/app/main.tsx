@@ -1,18 +1,19 @@
+// src/app/main.tsx
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-import { AuthProvider } from "@/auth/AuthContext";
+import { AuthProvider } from "@/features/auth/context/AuthContext";
 import { ToastProvider } from "@/components/feedback/ToastContainer";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <ToastProvider>
-        <AuthProvider>
+    <ToastProvider>
+      <AuthProvider>
+        <BrowserRouter>
           <App />
-        </AuthProvider>
-      </ToastProvider>
-    </BrowserRouter>
+        </BrowserRouter>
+      </AuthProvider>
+    </ToastProvider>
   </React.StrictMode>
 );

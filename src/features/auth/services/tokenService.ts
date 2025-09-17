@@ -1,8 +1,10 @@
-// src/auth/tokenService.ts
+// src/features/auth/services/tokenService.ts
 
 const TOKEN_KEY = "access_token";
 
-// Guardar token
+/**
+ * Guardar token en localStorage
+ */
 export const setAccessToken = (token: string) => {
   try {
     localStorage.setItem(TOKEN_KEY, token);
@@ -11,7 +13,9 @@ export const setAccessToken = (token: string) => {
   }
 };
 
-// Obtener token
+/**
+ * Obtener token desde localStorage
+ */
 export const getAccessToken = (): string | null => {
   try {
     return localStorage.getItem(TOKEN_KEY);
@@ -21,7 +25,9 @@ export const getAccessToken = (): string | null => {
   }
 };
 
-// Eliminar token
+/**
+ * Eliminar token de localStorage
+ */
 export const clearAccessToken = () => {
   try {
     localStorage.removeItem(TOKEN_KEY);
@@ -30,13 +36,9 @@ export const clearAccessToken = () => {
   }
 };
 
-// Logout global
-export const logout = () => {
-  clearAccessToken();
-  window.location.href = "/login";
-};
-
-// Decodificar JWT opcional
+/**
+ * Decodificar payload del JWT
+ */
 export const decodeToken = <T extends object = any>(token: string): T | null => {
   try {
     const payload = token.split(".")[1];

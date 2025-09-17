@@ -15,7 +15,8 @@ import { styled } from "@mui/material/styles";
 
 import ForgotPassword from "./ForgotPassword";
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from "./CustomIcons";
-import { useAuth } from "@/auth/AuthContext";
+//import { useAuth } from "@/auth/AuthContext";
+import { useAuth } from '../context/AuthContext'; // ✅ nuevo hook
 import { useToast } from "@/components/feedback/ToastContainer";
 
 const Card = styled(MuiCard)(({ theme }) => ({
